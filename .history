@@ -1,0 +1,120 @@
+#+1540620847
+pkg install tmux
+#+1540620920
+tmux new -s jail
+#+1540620975
+cd /usr/src/
+#+1540620976
+ls
+#+1540620998
+D=/jails/j1
+#+1540621004
+set D=/jails/j1
+#+1540621009
+echo D$
+#+1540621014
+echo $D
+#+1540621020
+mkdir -p $D
+#+1540621025
+cd /usr/src
+#+1540621033
+make buildworld
+#+1540802602
+ee /etc/rc.conf
+#+1540802647
+ee /etc/resolv.conf
+#+1540802657
+ee /etc/hosts
+#+1540802666
+hostname
+#+1540802674
+ee /etc/hosts
+#+1540802700
+hostname
+#+1540802703
+ee /etc/hosts
+#+1540802733
+service sshd restart
+#+1540802874
+/etc/rc.d/netif restart
+#+1540802885
+ee /etc/hosts
+#+1540802894
+ee /etc/rc.conf
+#+1540802951
+/etc/rc.d/netif restart
+#+1540802971
+cd /jails/
+#+1540802972
+ls
+#+1540802974
+cd j1/
+#+1540802975
+ls
+#+1540802978
+cd /usr/src/
+#+1540802979
+ls
+#+1540803015
+tmux ls
+#+1540803023
+tmux new -t jail
+#+1540803050
+set D=/jails/j1
+#+1540803055
+cd $D
+#+1540803057
+pwd
+#+1540803063
+cd /usr/src/
+#+1540803073
+make installworld DESTDIR=$D
+#+1540803145
+tmux ls
+#+1540803162
+tmux -a jail
+#+1540803169
+tmux a -t jail
+#+1540803241
+clear
+#+1540803262
+make distribution DESTDIR=$D
+#+1540803294
+clear
+#+1540803312
+mount -t devfs devfs $D/dev
+#+1540803338
+ee /etc/jail.conf
+#+1540803370
+hostname
+#+1540803402
+echo $D
+#+1540803411
+cd /jails/
+#+1540803412
+ll
+#+1540803472
+tmux a -t jails
+#+1540803473
+tmux a -t jail
+#+1540803502
+ee /etc/rc.conf
+#+1540803548
+service jail start
+#+1540803554
+ee /etc/jail.conf
+#+1540803565
+service jail start
+#+1540803632
+ee /etc/jail.conf
+#+1540803641
+echo 'security.jail.allow_raw_sockets=1' >> /etc/sysctl.conf
+#+1540803656
+sysctl security.jail.allow_raw_sockets=1
+#+1540803864
+service jail start
+#+1540803867
+jls
+#+1540803870
+jexec 1
