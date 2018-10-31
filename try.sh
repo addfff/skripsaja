@@ -9,10 +9,10 @@ then
 	mysql --user=root --password=toor --host=192.168.0.71 < 00a-createdatabase.sql
 	STR003=$'CREATE USER "rawuser1"@"%" IDENTIFIED BY "rawuser123";'
 	echo "$STR003" > 00b-createuser.sql
-	mysql --user=root --password=toor --host=192.168.0.71 < 00b-createuser.sql
-	STR004=$'GRANT ALL ON rawdb TO "rawuser1"@"%";'
+	mysql --user=root --password=toor --host=192.168.0.71 rawdb < 00b-createuser.sql
+	STR004=$'GRANT ALL ON rawdb TO "rawuser1"@"%" WITH GRANT OPTION;'
 	echo "$STR004" > 00c-grantuser.sql
-	mysql --user=root --password=toor --host=192.168.0.71 < 00c-grantuser.sql
+	mysql --user=root --password=toor --host=192.168.0.71 rawdb < 00c-grantuser.sql
 	
 fi
 cd /usr/src
