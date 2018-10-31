@@ -97,4 +97,8 @@ STR6=$'INSERT INTO '$H' (firstkey, lastkey, mypoint, reg_date)
 );'
 echo "$STR6" > $All/008-insertintotable.sql
 mysql --user=$H --password=$F $DB --host=192.168.0.71 < $All/008-insertintotable.sql
-
+cp ./don_laptop/jail/user.sh $D/root/
+cp ./don_laptop/jail/user-a.c $All
+cp ./don_laptop/jail/user-b.c $All
+echo "finishing... please compile in "$All" then run on cell "$D
+echo ":p"
