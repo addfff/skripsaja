@@ -1,4 +1,5 @@
 #!/bin/sh
+DB=$'rawdb'
 echo "nak setup database ke tak? YES/[no]"
 read setupdb
 if [ "$setupdb" = "YES" ]
@@ -9,10 +10,10 @@ then
 	mysql --user=root --password=toor --host=192.168.0.71 < 00a-createdatabase.sql
 	STR003=$'CREATE USER "rawuser1"@"%" IDENTIFIED BY "rawuser123";'
 	echo "$STR003" > 00b-createuser.sql
-	mysql --user=root --password=toor --host=192.168.0.71 rawdb < 00b-createuser.sql
+	mysql --user=root --password=toor --host=192.168.0.71 $DB < 00b-createuser.sql
 	STR004=$'GRANT ALL ON rawdb TO "rawuser1"@"%" WITH GRANT OPTION;'
 	echo "$STR004" > 00c-grantuser.sql
-	mysql --user=root --password=toor --host=192.168.0.71 rawdb < 00c-grantuser.sql
+	mysql --user=root --password=toor --host=192.168.0.71 $DB < 00c-grantuser.sql
 	
 fi
 cd /usr/src
@@ -54,7 +55,6 @@ All=/jails/all/$namakau
 mkdir -p $All
 cat $namakau > $All/001-h
 H=`cat $All/001-h`
-DB=$'rawdb'
 STR1=$'CREATE TABLE '$H' (
         id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         firstkey VARCHAR(10) NOT NULL,
@@ -63,7 +63,7 @@ STR1=$'CREATE TABLE '$H' (
         reg_date TIMESTAMP
 );'
 echo "$STR1" > $All/002-createtable.sql
-mysql --user=rawuser1 --password=rawuser123 $DB < $All/002-createtable.sql
+mysql --user=rawuser1 --password=rawuser123 --host=192.168.0.71 $DB < $All/002-createtable.sql
 cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1 > $All/003-randstring
 cp $All/003-randstring $D/etc/nad
 cp $All/003-randstring /etc/nad
@@ -74,4 +74,27 @@ F=`cat $All/003-randstring`
 echo "Second Key"
 md5 -q $All/003-randstring
 L=`md5 -q $All/003-randstring`
+STR2=$'INSERT INTO '$H' (firstkey, lastkey, mypoint, reg_date)
+        VALUES ("'$F'", "'$L'", 2000000000, NOW()
+);'
+echo "$STR2" > $All/004-insertintotable.sql
+mysql --user=rawuser1 --password=rawuser123 --host=192.168.0.71 $DB < $All/004-insertintotable.sql
+echo "Remember First Key is Password"
+echo $F
+STR3=$'CREATE USER "'$H'"@"%" IDENTIFIED BY "'$F'";'
+echo "$STR3" > $All/005-createuser.sql
+mysql --user=rawuser1 --password=rawuser123 --host=192.168.0.71 $DB < $All/005-createuser.sql
+STR4=$'GRANT INSERT ON '$DB'.'$H' TO "'$H'"@"%";'
+echo "$STR4" > $All/006-grantuser.sql
+STR5=$'GRANT UPDATE ON '$DB'.'$H' TO "'$H'"@"%";'
+echo "$STR5" >> $All/006-grantuser.sql
+mysql --user=rawuser1 --password=rawuser123 --host=192.168.0.71 $DB < $All/006-grantuser.sql
+cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1 > $All/007-randstring
+NF=`cat $All/007-randstring`
+NL=`md5 -q $All/007-randstring`
+STR6=$'INSERT INTO '$H' (firstkey, lastkey, mypoint, reg_date)
+        VALUES ("'$NF'", "'$NL'", 2000000000, NOW()
+);'
+echo "$STR6" > $All/008-insertintotable.sql
+mysql --user=$H --password=$F $DB --host=192.168.0.71 < $All/008-insertintotable.sql
 
