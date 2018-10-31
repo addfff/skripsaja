@@ -6,7 +6,7 @@ then
 	echo "ok setup bermula..."
 	STR001=$'CREATE DATABASE rawdb;'
 	echo "$STR001" > 00a-createdatabase.sql
-	mysql --user=root --password=toor < 00a-createdatabase.sql
+	mysql --user=root --password=toor --host=192.168.0.71 < 00a-createdatabase.sql
 
 fi
 cd /usr/src
