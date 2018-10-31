@@ -1,4 +1,14 @@
 #!/bin/sh
+echo "nak setup database ke tak? YES/[no]"
+read setupdb
+if [ "$setupdb" = "YES" ]
+then
+	echo "ok setup bermula..."
+	STR001=$'CREATE DATABASE rawdb;'
+	echo "$STR001" > 00a-createdatabase.sql
+	mysql --user=root --password=toor < 00a-createdatabase.sql
+
+fi
 cd /usr/src
 echo "nama apa"
 read namakau
@@ -26,8 +36,8 @@ echo '    exec.start = "/bin/sh /etc/rc";' >> $j
 echo '    exec.stop = "/bin/sh /etc/rc.shutdown";' >> $j
 echo '    allow.raw_sockets=1;' >> $j
 echo '}' >> $j
-echo 'PermitRootLogin yes' >> $D/etc/ssh/sshd_config
-echo 'sshd_enable="YES"' > $D/etc/rc.conf
+#echo 'PermitRootLogin yes' >> $D/etc/ssh/sshd_config
+#echo 'sshd_enable="YES"' > $D/etc/rc.conf
 #chflags schg $D/etc/master.passwd
 #chflags schg $D/etc/passwd
 service jail restart
