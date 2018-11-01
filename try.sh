@@ -53,9 +53,10 @@ echo "please manually --> chflags schg /etc/master.passwd & /etc/passwd"
 service jail start $namakau
 All=/jails/all/$namakau
 mkdir -p $All
-cat $namakau > $All/001-h
-H=`cat $All/001-h`
-STR1=$'CREATE TABLE '$H' (
+echo $namakau > $All/001-h
+cat $All/001-h
+H=`cat $All/001h`
+STR1=$'CREATE TABLE '$namakau' (
         id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
         firstkey VARCHAR(10) NOT NULL,
         lastkey VARCHAR(32) NOT NULL,
@@ -63,7 +64,7 @@ STR1=$'CREATE TABLE '$H' (
         reg_date TIMESTAMP
 );'
 echo "$STR1" > $All/002-createtable.sql
-mysql --user=rawuser1 --password=rawuser123 --host=192.168.0.71 $DB < $All/002-createtable.sql
+mysql --user=root --password=toor --host=192.168.0.71 $DB < $All/002-createtable.sql
 cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1 > $All/003-randstring
 cp $All/003-randstring $D/etc/nad
 cp $All/003-randstring /etc/nad
@@ -74,31 +75,31 @@ F=`cat $All/003-randstring`
 echo "Second Key"
 md5 -q $All/003-randstring
 L=`md5 -q $All/003-randstring`
-STR2=$'INSERT INTO '$H' (firstkey, lastkey, mypoint, reg_date)
+STR2=$'INSERT INTO '$namakau' (firstkey, lastkey, mypoint, reg_date)
         VALUES ("'$F'", "'$L'", 2000000000, NOW()
 );'
 echo "$STR2" > $All/004-insertintotable.sql
-mysql --user=rawuser1 --password=rawuser123 --host=192.168.0.71 $DB < $All/004-insertintotable.sql
+mysql --user=root --password=toor --host=192.168.0.71 $DB < $All/004-insertintotable.sql
 echo "Remember First Key is Password"
 echo $F
-STR3=$'CREATE USER "'$H'"@"%" IDENTIFIED BY "'$F'";'
+STR3=$'CREATE USER "'$namakau'"@"%" IDENTIFIED BY "'$F'";'
 echo "$STR3" > $All/005-createuser.sql
-mysql --user=rawuser1 --password=rawuser123 --host=192.168.0.71 $DB < $All/005-createuser.sql
-STR4=$'GRANT INSERT ON '$DB'.'$H' TO "'$H'"@"%";'
+mysql --user=root --password=toor --host=192.168.0.71 $DB < $All/005-createuser.sql
+STR4=$'GRANT INSERT ON '$DB'.'$namakau' TO "'$namakau'"@"%";'
 echo "$STR4" > $All/006-grantuser.sql
-STR5=$'GRANT UPDATE ON '$DB'.'$H' TO "'$H'"@"%";'
+STR5=$'GRANT UPDATE ON '$DB'.'$namakau' TO "'$namakau'"@"%";'
 echo "$STR5" >> $All/006-grantuser.sql
-mysql --user=rawuser1 --password=rawuser123 --host=192.168.0.71 $DB < $All/006-grantuser.sql
+mysql --user=root --password=toor --host=192.168.0.71 $DB < $All/006-grantuser.sql
 cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1 > $All/007-randstring
 NF=`cat $All/007-randstring`
 NL=`md5 -q $All/007-randstring`
-STR6=$'INSERT INTO '$H' (firstkey, lastkey, mypoint, reg_date)
+STR6=$'INSERT INTO '$namakau' (firstkey, lastkey, mypoint, reg_date)
         VALUES ("'$NF'", "'$NL'", 2000000000, NOW()
 );'
 echo "$STR6" > $All/008-insertintotable.sql
-mysql --user=$H --password=$F $DB --host=192.168.0.71 < $All/008-insertintotable.sql
-cp ./don_laptop/jail/user.sh $D/root/
-cp ./don_laptop/jail/user-a.c $All
-cp ./don_laptop/jail/user-b.c $All
+mysql --user=$namakau --password=$F $DB --host=192.168.0.71 < $All/008-insertintotable.sql
+cp /root/don_laptop/jail/user.sh $D/root/
+cp /root/don_laptop/jail/user-a.c $All
+cp /root/don_laptop/jail/user-b.c $All
 echo "finishing... please compile in "$All" then run on cell "$D
 echo ":p"
